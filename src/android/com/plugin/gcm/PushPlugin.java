@@ -22,6 +22,7 @@ import java.util.Iterator;
 public class PushPlugin extends CordovaPlugin {
 	public static final String TAG = "PushPlugin";
 
+	public static final String SETLISTENER = "setlistener";
 	public static final String REGISTER = "register";
 	public static final String UNREGISTER = "unregister";
 	public static final String EXIT = "exit";
@@ -84,6 +85,29 @@ public class PushPlugin extends CordovaPlugin {
 			Log.v(TAG, "UNREGISTER");
 			result = true;
 			callbackContext.success();
+
+		} else if (SETLISTENER.equals(action)) {
+
+			try {
+				JSONObject jo = data.getJSONObject(0);
+
+				gWebView = this.webView;
+
+				gECB = (String) jo.get("ecb");
+				result = true;
+				callbackContext.success();
+			} catch (JSONException e) {
+				Log.e(TAG, "execute: Got JSON Exception " + e.getMessage());
+				result = false;
+				callbackContext.error(e.getMessage());
+			}
+
+			if ( gCachedExtras != null) {
+				Log.v(TAG, "sending cached extras");
+				sendExtras(gCachedExtras);
+				gCachedExtras = null;
+			}
+
 		} else {
 			result = false;
 			Log.e(TAG, "Invalid action : " + action);
