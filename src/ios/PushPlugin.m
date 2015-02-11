@@ -35,6 +35,18 @@
 @synthesize callback;
 
 
+- (void)setlistener:(CDVInvokedUrlCommand*)command;
+{
+	self.callbackId = command.callbackId;
+
+    NSMutableDictionary* options = [command.arguments objectAtIndex:0];
+    
+    self.callback = [options objectForKey:@"ecb"];
+    
+    if (notificationMessage)			// if there is a pending startup notification
+        [self notificationReceived];	// go ahead and process it
+}
+
 - (void)unregister:(CDVInvokedUrlCommand*)command;
 {
 	self.callbackId = command.callbackId;

@@ -83,43 +83,11 @@ public class GCMIntentService extends GCMBaseIntentService {
 	{
 		NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 		String appName = getAppName(this);
-
+		
 		Intent notificationIntent = new Intent(this, PushHandlerActivity.class);
 		notificationIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
 		notificationIntent.putExtra("pushBundle", extras);
 
-		PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-		
-		int defaults = Notification.DEFAULT_ALL;
-
-		if (extras.getString("defaults") != null) {
-			try {
-				defaults = Integer.parseInt(extras.getString("defaults"));
-			} catch (NumberFormatException e) {}
-		}
-		
-		NotificationCompat.Builder mBuilder =
-			new NotificationCompat.Builder(context)
-				.setDefaults(defaults)
-				.setSmallIcon(context.getApplicationInfo().icon)
-				.setWhen(System.currentTimeMillis())
-				.setContentTitle(extras.getString("title"))
-				.setTicker(extras.getString("title"))
-				.setContentIntent(contentIntent)
-				.setAutoCancel(true);
-
-		String message = extras.getString("message");
-		if (message != null) {
-			mBuilder.setContentText(message);
-		} else {
-			mBuilder.setContentText("<missing message content>");
-		}
-
-		String msgcnt = extras.getString("msgcnt");
-		if (msgcnt != null) {
-			mBuilder.setNumber(Integer.parseInt(msgcnt));
-		}
-		
 		int notId = 0;
 		
 		try {
@@ -130,6 +98,42 @@ public class GCMIntentService extends GCMBaseIntentService {
 		}
 		catch(Exception e) {
 			Log.e(TAG, "Number format exception - Error parsing Notification ID" + e.getMessage());
+		}
+
+
+		PendingIntent contentIntent = PendingIntent.getActivity(this, notId, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+		
+		int defaults = Notification.DEFAULT_ALL;
+
+		if (extras.getString("defaults") != null) {
+			try {
+				defaults = Integer.parseInt(extras.getString("defaults"));
+			} catch (NumberFormatException e) {}
+		}
+
+		String message = extras.getString("message");
+
+		NotificationCompat.Builder mBuilder =
+			new NotificationCompat.Builder(context)
+				.setDefaults(defaults)
+				.setSmallIcon(context.getApplicationInfo().icon)
+				.setWhen(System.currentTimeMillis())
+				.setContentTitle(extras.getString("title"))
+				.setTicker(extras.getString("title"))
+				.setContentIntent(contentIntent)
+				.setStyle(new NotificationCompat.BigTextStyle().bigText(message))
+				.setAutoCancel(true);
+
+		
+		if (message != null) {
+			mBuilder.setContentText(message);
+		} else {
+			mBuilder.setContentText("<missing message content>");
+		}
+
+		String msgcnt = extras.getString("msgcnt");
+		if (msgcnt != null) {
+			mBuilder.setNumber(Integer.parseInt(msgcnt));
 		}
 		
 		mNotificationManager.notify((String) appName, notId, mBuilder.build());

@@ -1,6 +1,5 @@
-cordova.define("com.phonegap.plugins.PushPlugin.PushNotification", function(require, exports, module) { var PushNotification = function() {
+var PushNotification = function() {
 };
-
 
 // Call this to register for push notifications. Content of [options] depends on whether we are working with APNS (iOS) or GCM (Android)
 PushNotification.prototype.setlistener = function(successCallback, errorCallback, options) {
@@ -93,4 +92,3 @@ if (!window.plugins.pushNotification) {
 if (typeof module != 'undefined' && module.exports) {
   module.exports = PushNotification;
 }
-});
