@@ -36,7 +36,6 @@
 			</feature>
 		</config-file>
 
-        <framework src="com.google.android.gms:play-services-gcm:+" />
         <framework src="com.android.support:support-v13:22.2.0" />
 
 		<config-file target="AndroidManifest.xml" parent="/manifest">
